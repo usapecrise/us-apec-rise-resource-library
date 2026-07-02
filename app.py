@@ -333,7 +333,7 @@ sidebar = html.Div(
         # 🔥 SECTION LABEL
         html.Small("SUITE", className="sidebar-tools-label"),
 
-        # 🔹 DASHBOARD
+                # 🔹 DASHBOARD
         html.A(
             [
                 html.I(className="bi bi-bar-chart sidebar-icon"),
@@ -347,12 +347,11 @@ sidebar = html.Div(
                 "color": "inherit",
             },
         ),
-
         # 🔹 EXPLORER
         html.Div(
             [
                 html.I(className="bi bi-search sidebar-icon"),
-                html.Span("Explorer (Coming Soon)", className="sidebar-export-text")
+                html.Span("Explorer", className="sidebar-export-text")
             ],
             className="sidebar-export-row"
         ),
@@ -919,7 +918,7 @@ def update_results(
         df = df[df["Activity Type"] == activity]
 
     elif selected and selected != "All Resources":
-        df = df[df["Activity Type"] == selected]
+        df = df[df["Resource Type Name"] == selected]
 
     # Search
     if query:
@@ -1061,10 +1060,11 @@ def update_counts(_):
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
-    if "Activity Type" in df.columns:
-        df["Activity Type"] = df["Activity Type"].apply(clean)
+    # Use the LOOKUP field, not the linked record ID
+    if "Activity Type Name" in df.columns:
+        df["Activity Type Name"] = df["Activity Type Name"].apply(clean)
 
-    counts = df["Activity Type"].value_counts().to_dict()
+    counts = df["Activity Type Name"].value_counts().to_dict()
     counts["All Resources"] = len(df)
 
     return counts
