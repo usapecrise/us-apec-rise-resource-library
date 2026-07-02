@@ -334,12 +334,18 @@ sidebar = html.Div(
         html.Small("SUITE", className="sidebar-tools-label"),
 
         # 🔹 DASHBOARD
-        html.Div(
+        html.A(
             [
                 html.I(className="bi bi-bar-chart sidebar-icon"),
                 html.Span("Dashboard", className="sidebar-export-text")
             ],
-            className="sidebar-export-row"
+            href="https://us-apec-rise-performance-dashboard-f4f7e6hmauggaeew.centralus-01.azurewebsites.net/",
+            target="_blank",
+            className="sidebar-export-row",
+            style={
+                "textDecoration": "none",
+                "color": "inherit",
+            },
         ),
 
         # 🔹 EXPLORER
