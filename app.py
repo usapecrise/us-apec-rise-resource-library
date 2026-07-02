@@ -752,7 +752,7 @@ app.layout = html.Div(
                                                     placeholder="All Resource Type",
                                                     clearable=True
                                                 ),
-                                            ], style={"flex": "1"}),
+                                            ], md=2,
 
 
                                             # ECONOMY
@@ -763,7 +763,7 @@ app.layout = html.Div(
                                                     placeholder="All Economies",
                                                     clearable=True
                                                 ),
-                                            ], style={"flex": "1"}),
+                                            ], md=2,
 
                                             # WORKSTREAM
                                             dbc.Col([
@@ -773,7 +773,7 @@ app.layout = html.Div(
                                                     placeholder="All Workstreams",
                                                     clearable=True
                                                 ),
-                                            ], style={"flex": "1"}),
+                                            ], md=2,
 
                                             # ACTIVITY TYPE
                                             dbc.Col([
@@ -783,7 +783,7 @@ app.layout = html.Div(
                                                     placeholder="All Activity Types",
                                                     clearable=True
                                                 ),
-                                            ], style={"flex": "1"}),
+                                            ], md=2,
 
                                             # FY
                                             dbc.Col([
@@ -793,7 +793,7 @@ app.layout = html.Div(
                                                     placeholder="All Fiscal Years",
                                                     clearable=True
                                                 ),
-                                            ], style={"flex": "1"}),
+                                            ], md=2,
 
                                             # CLEAR
                                             dbc.Col([
