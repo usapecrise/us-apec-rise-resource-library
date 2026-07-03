@@ -1,6 +1,7 @@
 from locale import normalize
 
 from azure.storage.blob import BlobServiceClient
+import zipfile
 
 import dash
 from dash import Dash, html, dcc, Input, Output, State, ctx, ALL
@@ -739,7 +740,7 @@ app.layout = html.Div(
                                                     placeholder="All Resource Type",
                                                     clearable=True
                                                 ),
-                                            ], md=2,
+                                            ], md=2),
 
 
                                             # ECONOMY
@@ -750,7 +751,7 @@ app.layout = html.Div(
                                                     placeholder="All Economies",
                                                     clearable=True
                                                 ),
-                                            ], md=2,
+                                            ], md=2),
 
                                             # WORKSTREAM
                                             dbc.Col([
@@ -760,7 +761,7 @@ app.layout = html.Div(
                                                     placeholder="All Workstreams",
                                                     clearable=True
                                                 ),
-                                            ], md=2,
+                                            ], md=2),
 
                                             # ACTIVITY TYPE
                                             dbc.Col([
@@ -770,7 +771,7 @@ app.layout = html.Div(
                                                     placeholder="All Activity Types",
                                                     clearable=True
                                                 ),
-                                            ], md=2,
+                                            ], md=2),
 
                                             # FY
                                             dbc.Col([
@@ -780,7 +781,7 @@ app.layout = html.Div(
                                                     placeholder="All Fiscal Years",
                                                     clearable=True
                                                 ),
-                                            ], md=2,
+                                            ], md=2),
 
                                             # CLEAR
                                             dbc.Col([
@@ -799,11 +800,12 @@ app.layout = html.Div(
                                                 "justifyContent": "flex-end"
                                             }),
 
-                                        ], className="g-3")
-
+                                        ], className="g-3"
+                                    )
                                     ),
                                     className="filter-bar",
                                     style={"marginTop": "10px"}
+                        
                                 ),
 
                             ],
