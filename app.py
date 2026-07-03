@@ -345,7 +345,7 @@ sidebar = html.Div(
         html.Div(
             [
                 html.I(className="bi bi-search sidebar-icon"),
-                html.Span("Explorer Coming Soon)", className="sidebar-export-text")
+                html.Span("Explorer (Coming Soon)", className="sidebar-export-text")
             ],
             className="sidebar-export-row"
         ),
