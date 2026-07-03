@@ -80,19 +80,6 @@ print("BASE ID:", os.getenv("AIRTABLE_BASE_ID"))
 
 
 # =========================================
-# RSS DATA CACHE
-# =========================================
-RSS_CACHE = {}
-RSS_CACHE_TIME = None
-RSS_CACHE_DURATION = timedelta(hours=12)
-
-# =========================================
-# CACHE REFRESH TIMES (UTC)
-# =========================================
-
-CACHE_REFRESH_HOURS = [7, 19]  # ET
-
-# =========================================
 # AIRTABLE FETCH
 # =========================================
 
@@ -880,9 +867,7 @@ def update_results(
     selected,
 ):
 
-    df = DATASTORE["resources"].copy()
-    print(DATASTORE["resources"].columns.tolist())
-    print(DATASTORE["resources"].head())
+    df = load_airtable_table("Resources")
     
     # Clean Airtable list fields
     def clean(val):
@@ -999,7 +984,7 @@ def update_results(
 )
 def update_timestamp(_):
     now = datetime.now(ZoneInfo("America/New_York"))
-    return now.strftime("Data refreshed: %d %B %Y • %I:%M %p ET")
+    return now.strftime("Library loaded: %d %B %Y • %I:%M %p ET")
 
 @app.callback(
     Output("sidebar", "style"),
@@ -1228,7 +1213,7 @@ def populate_filters(_):
 
 def download_all(n_clicks, query, economy, workstream, activity, fy):
 
-    df = DATASTORE["activities"].copy()
+    df = load_airtable_table("Resources")
 
     # Clean Airtable fields
     def clean(val):
