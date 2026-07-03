@@ -942,16 +942,12 @@ def update_results(
 ):
 
     df = load_airtable_table("Resources")
-    print(df.columns.tolist())
-    print(df[["Title", "Blob Path"]].head())
-    
-    # Clean Airtable list fields
+
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
-    for col in ["Economy", "Workstream", "Activity Type", "Fiscal Year", "Resource Type Name",]:
-        if col in df.columns:
-            df[col] = df[col].apply(clean)
+    for col in df.columns:
+        df[col] = df[col].apply(clean)
 
     # Clear filters
     trigger = ctx.triggered_id
@@ -1254,29 +1250,29 @@ def populate_filters(_):
     # BUILD OPTIONS (adjust column names if needed)
 
     resource_options = [
-        {"label": x, "value": x}
-        for x in sorted(resource_df["Resource Type Name"].dropna().unique())
-    ]
+    {"label": x, "value": x}
+    for x in sorted(df["Resource Type Name"].dropna().unique())
+]
 
     econ_options = [
-        {"label": x, "value": x}
-        for x in sorted(econ_df["Economy"].dropna().unique())
-    ]
+    {"label": x, "value": x}
+    for x in sorted(df["Economy Name"].dropna().unique())
+]
 
     ws_options = [
-        {"label": x, "value": x}
-        for x in sorted(ws_df["Workstream"].dropna().unique())
-    ]
+    {"label": x, "value": x}
+    for x in sorted(df["Workstream Name"].dropna().unique())
+]
 
     act_options = [
-        {"label": x, "value": x}
-        for x in sorted(act_df["Activity Type"].dropna().unique())
-    ]
+    {"label": x, "value": x}
+    for x in sorted(df["Activity Type Name"].dropna().unique())
+]
 
     fy_options = [
-        {"label": x, "value": x}
-        for x in sorted(fy_df["Fiscal Year"].dropna().unique())
-    ]
+    {"label": x, "value": x}
+    for x in sorted(df["Fiscal Year Name"].dropna().unique())
+]
 
     return  resource_options, econ_options, ws_options, act_options, fy_options
 
