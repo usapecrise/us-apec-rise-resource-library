@@ -329,16 +329,12 @@ sidebar = html.Div(
             href="https://us-apec-rise-performance-dashboard-f4f7e6hmauggaeew.centralus-01.azurewebsites.net/",
             target="_blank",
             className="sidebar-export-row",
-            style={
-                "textDecoration": "none",
-                "color": "inherit",
-            },
         ),
         # 🔹 EXPLORER
         html.Div(
             [
                 html.I(className="bi bi-search sidebar-icon"),
-                html.Span("Explorer", className="sidebar-export-text")
+                html.Span("Explorer Coming Soon)", className="sidebar-export-text")
             ],
             className="sidebar-export-row"
         ),
