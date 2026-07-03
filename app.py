@@ -1115,16 +1115,17 @@ def toggle_sidebar(n, sidebar_style, main_style):
 def update_counts(_):
 
     df = load_airtable_table("Resources")
-    
+
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
-    # Use the LOOKUP field, not the linked record ID
-    if "Activity Type Name" in df.columns:
-        df["Activity Type Name"] = df["Activity Type Name"].apply(clean)
+    if "Resource Type Name" in df.columns:
+        df["Resource Type Name"] = df["Resource Type Name"].apply(clean)
 
     counts = df["Resource Type Name"].value_counts().to_dict()
     counts["All Resources"] = len(df)
+
+    print(counts)   # <-- Add this
 
     return counts
 
