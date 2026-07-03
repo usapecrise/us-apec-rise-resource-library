@@ -305,7 +305,7 @@ sidebar = html.Div(
     [
 
         html.H4(
-            "LIBRARY",
+            "US APEC-RISE",
             style={
                 "fontSize": "20px",
                 "letterSpacing": "1px",
@@ -345,7 +345,7 @@ sidebar = html.Div(
         html.Div(
             [
                 html.I(className="bi bi-search sidebar-icon"),
-                html.Span("Explorer (Coming Soon)", className="sidebar-export-text")
+                html.Span("Evidence Explorer (Coming Soon)", className="sidebar-export-text")
             ],
             className="sidebar-export-row"
         ),
@@ -389,7 +389,7 @@ topbar = html.Div(
                 html.H3(
                     [
                         html.Span(
-                            "US APEC-RISE Resource Library",
+                            "Resource Library",
                             style={
                                 "fontSize": "30px",
                                 "letterSpacing": "1px",
@@ -407,6 +407,7 @@ topbar = html.Div(
                 ),
 
                 html.Div(
+                    "Knowledge products, technical guidance, and evidence developed under US APEC-RISE.",
                     id="page-subtitle",
                     style={
                         "font-size": "14px",
