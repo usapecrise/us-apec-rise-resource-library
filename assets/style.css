@@ -1754,17 +1754,9 @@ min-width:300px;
 ======================================== */
 
 .filter-bar {
-    backdrop-filter: blur(6px);
-    background: white;
-    font-family: 'Inter', sans-serif;
-    border: 1px solid #e6e9ef;
+    border: none;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    padding: 14px 18px;
-    margin-bottom: 28px;
-    position: sticky;
-    top: 90px;
-    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05);
 }
 
 .filter-bar:hover {
@@ -1796,8 +1788,10 @@ min-width:300px;
 .filter-label {
     font-size: 12px;
     font-weight: 600;
-    color: var(--text-muted);
+    color: #355f7c;
     margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
 }
 
 
