@@ -1125,17 +1125,20 @@ def update_counts(_):
     counts = df["Resource Type Name"].value_counts().to_dict()
     counts["All Resources"] = len(df)
 
-    print(counts)   # <-- Add this
+    print("Update counts:", counts)
 
     return counts
-
 
 @app.callback(
     Output("resource-type-sidebar", "children"),
     Input("activity-type-counts", "data"),
     Input("selected-resource-type", "data"),
 )
+
+
 def render_sidebar(counts, selected):
+    
+    print("Sidebar counts:", counts)
 
     if not counts:
         return []
