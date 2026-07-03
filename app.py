@@ -714,9 +714,6 @@ app.layout = html.Div(
                                         "marginBottom": "8px"
                                     }
                                 ),
-
-# 🔹 FILTER CARD
-# 🔹 FILTER CARD
 # 🔹 FILTER CARD
 dbc.Card(
     dbc.CardBody(
@@ -871,12 +868,21 @@ dbc.Card(
     },
 
 ),
-                        # ================= RESULTS =================
-                        html.Div(id="results")
+# ================= RESULTS =================
+html.Div(id="results"),
+
+                            ],
+
+                            style={
+                                "marginTop": "24px",
+                                "marginBottom": "24px"
+                            }
+
+                        ),
 
                     ],
 
-                    id="main-content", 
+                    id="main-content",
                     style={
                         "marginLeft": "230px", 
                         "padding": "24px 28px",
