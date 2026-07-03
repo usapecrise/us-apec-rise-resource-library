@@ -930,6 +930,8 @@ def update_results(
 ):
 
     df = load_airtable_table("Resources")
+    print(df.columns.tolist())
+    print(df[["Title", "Blob Path"]].head())
     
     # Clean Airtable list fields
     def clean(val):
