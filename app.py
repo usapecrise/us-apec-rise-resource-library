@@ -716,132 +716,154 @@ app.layout = html.Div(
                                 ),
 
 # 🔹 FILTER CARD
+# 🔹 FILTER CARD
 dbc.Card(
     dbc.CardBody(
 
-        dbc.Row(
+        [
 
-            [
+            # ==========================================
+            # ROW 1
+            # ==========================================
+            dbc.Row(
 
-                # SEARCH
-                dbc.Col(
-                    [
-                        html.Div("Search", className="filter-label"),
-                        dcc.Input(
-                            id="search-input",
-                            placeholder="Search resources...",
-                            className="search-input",
-                        ),
-                    ],
-                    md=3,
-                ),
+                [
 
-                # RESOURCE TYPE
-                dbc.Col(
-                    [
-                        html.Div("Resource Type", className="filter-label"),
-                        dcc.Dropdown(
-                            id="resource-type-filter",
-                            placeholder="All Resource Types",
-                            clearable=True,
-                        ),
-                    ],
-                    md=2,
-                ),
+                    # SEARCH
+                    dbc.Col(
+                        [
+                            html.Div("Search", className="filter-label"),
+                            dcc.Input(
+                                id="search-input",
+                                placeholder="Search resources...",
+                                className="search-input",
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=5,
+                    ),
 
-                # ECONOMY
-                dbc.Col(
-                    [
-                        html.Div("Economy", className="filter-label"),
-                        dcc.Dropdown(
-                            id="economy-filter",
-                            placeholder="All Economies",
-                            clearable=True,
-                        ),
-                    ],
-                    md=2,
-                ),
+                    # RESOURCE TYPE
+                    dbc.Col(
+                        [
+                            html.Div("Resource Type", className="filter-label"),
+                            dcc.Dropdown(
+                                id="resource-type-filter",
+                                placeholder="All Resource Types",
+                                clearable=True,
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=3,
+                    ),
 
-                # WORKSTREAM
-                dbc.Col(
-                    [
-                        html.Div("Workstream", className="filter-label"),
-                        dcc.Dropdown(
-                            id="workstream-filter",
-                            placeholder="All Workstreams",
-                            clearable=True,
-                        ),
-                    ],
-                    md=2,
-                ),
+                    # ECONOMY
+                    dbc.Col(
+                        [
+                            html.Div("Economy", className="filter-label"),
+                            dcc.Dropdown(
+                                id="economy-filter",
+                                placeholder="All Economies",
+                                clearable=True,
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=4,
+                    ),
 
-                # ACTIVITY TYPE
-                dbc.Col(
-                    [
-                        html.Div("Activity Type", className="filter-label"),
-                        dcc.Dropdown(
-                            id="activity-filter",
-                            placeholder="All Activity Types",
-                            clearable=True,
-                        ),
-                    ],
-                    md=2,
-                ),
+                ],
 
-                # FISCAL YEAR
-                dbc.Col(
-                    [
-                        html.Div("Fiscal Year", className="filter-label"),
-                        dcc.Dropdown(
-                            id="fy-filter",
-                            placeholder="All Fiscal Years",
-                            clearable=True,
-                        ),
-                    ],
-                    md=2,
-                ),
+                className="g-3 mb-3",
 
-                # CLEAR BUTTON
-                dbc.Col(
-                    [
-                        html.Div(" ", className="filter-label"),
-                        dbc.Button(
-                            "Clear Filters",
-                            id="clear-filters",
-                            className="button-clear-filters-btn",
-                            color="light",
-                            n_clicks=0,
-                            style={
-                                "height": "38px",
-                                "whiteSpace": "nowrap",
-                                "width": "100%",
-                            },
-                        ),
-                    ],
-                    width="auto",
-                    style={
-                        "display": "flex",
-                        "flexDirection": "column",
-                        "justifyContent": "flex-end",
-                    },
-                ),
+            ),
 
-            ],
+            # ==========================================
+            # ROW 2
+            # ==========================================
+            dbc.Row(
 
-            className="g-3 align-items-end",
+                [
 
-        )
+                    # WORKSTREAM
+                    dbc.Col(
+                        [
+                            html.Div("Workstream", className="filter-label"),
+                            dcc.Dropdown(
+                                id="workstream-filter",
+                                placeholder="All Workstreams",
+                                clearable=True,
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=4,
+                    ),
+
+                    # ACTIVITY TYPE
+                    dbc.Col(
+                        [
+                            html.Div("Activity Type", className="filter-label"),
+                            dcc.Dropdown(
+                                id="activity-filter",
+                                placeholder="All Activity Types",
+                                clearable=True,
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=3,
+                    ),
+
+                    # FISCAL YEAR
+                    dbc.Col(
+                        [
+                            html.Div("Fiscal Year", className="filter-label"),
+                            dcc.Dropdown(
+                                id="fy-filter",
+                                placeholder="All Fiscal Years",
+                                clearable=True,
+                                style={"width": "100%"},
+                            ),
+                        ],
+                        md=3,
+                    ),
+
+                    # CLEAR FILTERS
+                    dbc.Col(
+                        [
+                            html.Div(" ", className="filter-label"),
+                            dbc.Button(
+                                "Clear Filters",
+                                id="clear-filters",
+                                className="button-clear-filters-btn",
+                                color="light",
+                                n_clicks=0,
+                                style={
+                                    "height": "38px",
+                                    "width": "100%",
+                                    "whiteSpace": "nowrap",
+                                },
+                            ),
+                        ],
+                        md=2,
+                        style={
+                            "display": "flex",
+                            "flexDirection": "column",
+                            "justifyContent": "flex-end",
+                        },
+                    ),
+
+                ],
+
+                className="g-3 align-items-end",
+
+            ),
+
+        ]
 
     ),
 
     className="filter-bar",
     style={"marginTop": "10px"},
 ),
-
-                            ],
-
-                            style={"marginTop": "24px", "marginBottom": "24px"}
-                        ),
 
                         # ================= RESULTS =================
                         html.Div(id="results")
