@@ -551,13 +551,17 @@
     margin-bottom: 8px;
 }
 
-/* Export Row */
+/* Sidebar Links */
 .sidebar-export-row {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 10px 4px;
+    width: 100%;
+
     color: #355f7c;
+    text-decoration: none;
+
     font-weight: 500;
     cursor: pointer;
     border-radius: 8px;
@@ -566,8 +570,17 @@
 
 .sidebar-export-row:hover {
     background-color: rgba(53, 95, 124, 0.08);
+    color: #2f4a5f;
+    text-decoration: none;
 }
 
+.sidebar-export-row:visited {
+    color: #355f7c;
+}
+
+.sidebar-export-row:active {
+    color: #355f7c;
+}
 .timestamp-badge {
     font-size: 13px;
     font-weight: 400;
