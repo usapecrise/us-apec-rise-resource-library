@@ -290,6 +290,17 @@ ACTIVITY_TYPE_ICONS = {
     "Technical Report": "bi-file-earmark-text",
 }
 
+RESOURCE_TYPE_ICONS = {
+    "Toolkit": "bi-tools",
+    "Report": "bi-file-earmark-text",
+    "Brief": "bi-file-text",
+    "Insight Note": "bi-lightbulb",
+    "Dashboard": "bi-bar-chart",
+    "Presentation": "bi-easel",
+    "Case Study": "bi-journal-text",
+}
+
+
 sidebar = html.Div(
     [
 
@@ -1112,7 +1123,7 @@ def update_counts(_):
     if "Activity Type Name" in df.columns:
         df["Activity Type Name"] = df["Activity Type Name"].apply(clean)
 
-    counts = df["Activity Type Name"].value_counts().to_dict()
+    counts = df["Resource Type Name"].value_counts().to_dict()
     counts["All Resources"] = len(df)
 
     return counts
@@ -1162,8 +1173,8 @@ def render_sidebar(counts, selected):
         if k == "All Resources":
             continue
 
-        icon = ACTIVITY_TYPE_ICONS.get(k, "bi-file")
-
+        icon = RESOURCE_TYPE_ICONS.get(k, "bi-file-earmark")
+        
         items.append(
             dbc.NavLink(
     [
