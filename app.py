@@ -948,7 +948,7 @@ def update_results(
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
-    for col in ["Economy", "Workstream", "Activity Type", "Fiscal Year"]:
+    for col in ["Economy", "Workstream", "Activity Type", "Fiscal Year", "Resource Type Name",]:
         if col in df.columns:
             df[col] = df[col].apply(clean)
 
@@ -1254,7 +1254,7 @@ def populate_filters(_):
 
     resource_options = [
         {"label": x, "value": x}
-        for x in sorted(resource_df["Resource Type"].dropna().unique())
+        for x in sorted(resource_df["Resource Type Name"].dropna().unique())
     ]
 
     econ_options = [
@@ -1303,7 +1303,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
     "Workstream Reference List",
     "Activity Type",
     "Fiscal Year",
-    "Resource Type",
+    "Resource Type Name",
 ]:
         if col in df.columns:
             df[col] = df[col].apply(clean)
@@ -1340,7 +1340,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
 
             name = str(row.get("Name", f"resource_{i}")).replace("/", "-")
 
-            resource_type = row.get("Resource Type")
+            resource_type = row.get("Resource Type Name")
 
             # ================= FILES (BLOB) =================
             if resource_type == "File":
