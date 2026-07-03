@@ -1039,8 +1039,8 @@ def toggle_sidebar(n, sidebar_style, main_style):
 )
 def update_counts(_):
 
-    df = DATASTORE["resources"].copy()
-
+    df = load_airtable_table("Resources")
+    
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
