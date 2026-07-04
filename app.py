@@ -469,9 +469,6 @@ def build_filtered_dataframe(economy, workstream, activity, fy, status):
     if fy:
         df = df[df["Fiscal Year Name"] == fy]
 
-    if status:
-        df = df[df["Status"] == status]
-
     return df
 
 # =====================================
@@ -1295,10 +1292,10 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
         return val[0] if isinstance(val, list) else val
 
     for col in [
-    "Economy",
-    "Workstream Reference List",
-    "Activity Type",
-    "Fiscal Year",
+    "Economy Name",
+    "Workstream Name",
+    "Activity Type Name",
+    "Fiscal Year Name",
     "Resource Type Name",
 ]:
         if col in df.columns:
