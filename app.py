@@ -958,17 +958,17 @@ def update_results(
 
     # Apply filters
     if economy:
-        df = df[df["Economy"] == economy]
+        df = df[df["Economy Name"] == economy]
 
     if workstream:
-        df = df[df["Workstream"] == workstream]
+        df = df[df["Workstream Name"] == workstream]
 
     if fy:
-        df = df[df["Fiscal Year"] == fy]
+        df = df[df["Fiscal Year Name"] == fy]
 
     # Activity Type logic
     if activity:
-        df = df[df["Activity Type"] == activity]
+        df = df[df["Activity Type Name"] == activity]
 
     elif selected and selected != "All Resources":
         df = df[df["Resource Type Name"] == selected]
