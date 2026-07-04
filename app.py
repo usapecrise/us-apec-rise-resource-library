@@ -1249,29 +1249,29 @@ def populate_filters(_):
 
     # BUILD OPTIONS (adjust column names if needed)
 
-resource_options = [
-    {"label": x, "value": x}
-    for x in sorted(resource_df["Resource Type"].dropna().unique())
+    resource_options = [
+        {"label": x, "value": x}
+        for x in sorted(resource_df["Resource Type"].dropna().unique())
 ]
 
-econ_options = [
-    {"label": x, "value": x}
-    for x in sorted(econ_df["Economy"].dropna().unique())
+    econ_options = [
+        {"label": x, "value": x}
+        for x in sorted(econ_df["Economy"].dropna().unique())
 ]
 
-ws_options = [
-    {"label": x, "value": x}
-    for x in sorted(ws_df["Workstream"].dropna().unique())
+    ws_options = [
+        {"label": x, "value": x}
+        for x in sorted(ws_df["Workstream"].dropna().unique())
 ]
 
-act_options = [
-    {"label": x, "value": x}
-    for x in sorted(act_df["Activity Type"].dropna().unique())
+    act_options = [
+        {"label": x, "value": x}
+        for x in sorted(act_df["Activity Type"].dropna().unique())
 ]
 
-fy_options = [
-    {"label": x, "value": x}
-    for x in sorted(fy_df["Fiscal Year"].dropna().unique())
+    fy_options = [
+        {"label": x, "value": x}
+        for x in sorted(fy_df["Fiscal Year"].dropna().unique())
 ]
     return  resource_options, econ_options, ws_options, act_options, fy_options
 
