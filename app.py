@@ -951,7 +951,8 @@ html.Div(id="results"),
 
 @app.callback(
     Output("results", "children"),
-   Input("apply-filters", "n_clicks"),
+
+    Input("apply-filters", "n_clicks"),
     Input("clear-filters", "n_clicks"),
     Input("selected-resource-type", "data"),
 
@@ -963,14 +964,15 @@ html.Div(id="results"),
     State("fy-filter", "value"),
 )
 def update_results(
+    apply_click,
+    clear_click,
+    selected,
     query,
     economy,
     workstream,
     resource_type,
     activity,
     fy,
-    clear_click,
-    selected,
 ):
 
     df = load_airtable_table("Resources")
@@ -999,7 +1001,10 @@ def update_results(
         df = df[df["Workstream Name"].isin(workstream)]
         
     if resource_type:
-    df = df[df["Resource Type Name"].isin(resource_type)]
+        df = df[df["Resource Type Name"].isin(resource_type)]
+
+    if activity:
+        df = df[df["Activity Type Name"].isin(activity)]
 
     if fy:
         df = df[df["Fiscal Year Name"].isin(fy)]
