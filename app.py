@@ -801,72 +801,100 @@ dbc.Card(
 
             ),
 
-            # ==========================================
-            # FILTERS - ROW 2
-            # ==========================================
-            dbc.Row(
+# ==========================================
+# FILTERS - ROW 2
+# ==========================================
+dbc.Row(
+    [
 
-                [
+        # Activity
+        dbc.Col(
+            [
+                html.Div("Activity", className="filter-label"),
+                dcc.Dropdown(
+                    id="activity-filter",
+                    placeholder="All Activities",
+                    clearable=True,
+                    multi=True,
+                ),
+            ],
+            md=4,
+        ),
 
-                    dbc.Col(
-                        [
-                            html.Div("Activity", className="filter-label"),
-                            dcc.Dropdown(
-                                id="activity-filter",
-                                placeholder="All Activities",
-                                clearable=True,
-                                multi=True,
-                            ),
-                        ],
-                        md=5,
-                    ),
+        # Fiscal Year
+        dbc.Col(
+            [
+                html.Div("Fiscal Year", className="filter-label"),
+                dcc.Dropdown(
+                    id="fy-filter",
+                    placeholder="All Fiscal Years",
+                    clearable=True,
+                    multi=True,
+                ),
+            ],
+            md=4,
+        ),
 
-                    dbc.Col(
-                        [
-                            html.Div("Fiscal Year", className="filter-label"),
-                            dcc.Dropdown(
-                                id="fy-filter",
-                                placeholder="All Fiscal Years",
-                                clearable=True,
-                                multi=True,
-                            ),
-                        ],
-                        md=4,
-                    ),
+        # Apply Filters
+        dbc.Col(
+            [
+                html.Div(" ", className="filter-label"),
 
-                    dbc.Col(
-                        [
-                            html.Div(" ", className="filter-label"),
+                dbc.Button(
+                    [
+                        html.I(className="bi bi-funnel me-2"),
+                        "Apply Filters",
+                    ],
+                    id="apply-filters",
+                    n_clicks=0,
+                    style={
+                        "width": "100%",
+                        "height": "38px",
+                        "backgroundColor": "#355f7c",
+                        "borderColor": "#355f7c",
+                        "color": "white",
+                    },
+                ),
+            ],
+            md=2,
+            style={
+                "display": "flex",
+                "flexDirection": "column",
+                "justifyContent": "flex-end",
+            },
+        ),
 
-                            dbc.Button(
-                                [
-                                    html.I(className="bi bi-x-circle me-2"),
-                                    "Clear Filters",
-                                ],
-                                id="clear-filters",
-                                className="button-clear-filters-btn",
-                                color="light",
-                                n_clicks=0,
-                                style={
-                                    "width": "100%",
-                                    "height": "38px",
-                                },
-                            ),
+        # Clear Filters
+        dbc.Col(
+            [
+                html.Div(" ", className="filter-label"),
 
-                        ],
-                        md=3,
-                        style={
-                            "display": "flex",
-                            "flexDirection": "column",
-                            "justifyContent": "flex-end",
-                        },
-                    ),
+                dbc.Button(
+                    [
+                        html.I(className="bi bi-x-circle me-2"),
+                        "Clear Filters",
+                    ],
+                    id="clear-filters",
+                    className="button-clear-filters-btn",
+                    color="light",
+                    n_clicks=0,
+                    style={
+                        "width": "100%",
+                        "height": "38px",
+                    },
+                ),
+            ],
+            md=2,
+            style={
+                "display": "flex",
+                "flexDirection": "column",
+                "justifyContent": "flex-end",
+            },
+        ),
 
-                ],
-
-                className="g-3 align-items-end",
-
-            ),
+    ],
+    className="g-3 align-items-end",
+),
 
         ]
 
@@ -923,14 +951,16 @@ html.Div(id="results"),
 
 @app.callback(
     Output("results", "children"),
-    Input("search-input", "value"),
-    Input("economy-filter", "value"),
-    Input("workstream-filter", "value"),
-    Input("resource-type-filter", "value"),
-    Input("activity-filter", "value"),
-    Input("fy-filter", "value"),
+   Input("apply-filters", "n_clicks"),
     Input("clear-filters", "n_clicks"),
     Input("selected-resource-type", "data"),
+
+    State("search-input", "value"),
+    State("economy-filter", "value"),
+    State("workstream-filter", "value"),
+    State("resource-type-filter", "value"),
+    State("activity-filter", "value"),
+    State("fy-filter", "value"),
 )
 def update_results(
     query,
