@@ -1025,69 +1025,59 @@ def update_results(
 
     # ================= EMPTY STATE =================
     if len(records) == 0:
-        return dbc.Container(
+    return html.Div(
+        [
             html.Div(
-                [
-                    html.Div(
-                        "No resources match your current filters.",
-                        style={
-                            "fontSize": "16px",
-                            "fontWeight": "600",
-                            "color": "#355f7c",
-                            "marginBottom": "6px"
-                        }
-                    ),
-                    html.Div(
-                        "Try adjusting your filters or search terms.",
-                        style={
-                            "fontSize": "13px",
-                            "color": "#6c7a89"
-                        }
-                    )
-                ],
+                "No resources match your current filters.",
                 style={
-                    "textAlign": "center",
-                    "padding": "60px 0"
+                    "fontSize": "16px",
+                    "fontWeight": "600",
+                    "color": "#355f7c",
+                    "marginBottom": "6px"
                 }
             ),
-            fluid=True 
-        )
-
-    # ================= RESULTS =================
-    return dbc.Container(
-
-        [
-
             html.Div(
-                f"{len(records)} results found",
+                "Try adjusting your filters or search terms.",
                 style={
                     "fontSize": "13px",
-                    "color": "#6c757d",
-                    "marginBottom": "10px"
+                    "color": "#6c7a89"
                 }
-            ),
-
-            dbc.Row(
-
-                [
-                    dbc.Col(
-                        build_card(r),
-                        xs=12, sm=6, md=4, lg=3
-                    )
-                    for r in records[:20]
-                ],
-
-                className="g-4",
-                justify="start",  
-                style={"width": "100%"}
-
             )
-
         ],
-
-        fluid=True
+        style={
+            "textAlign": "center",
+            "padding": "60px 0",
+            "width": "100%"
+        }
     )
 
+    # ================= RESULTS =================
+    return html.Div(
+    [
+        html.Div(
+            f"{len(records)} results found",
+            style={
+                "fontSize": "13px",
+                "color": "#6c757d",
+                "marginBottom": "10px"
+            }
+        ),
+
+        dbc.Row(
+            [
+                dbc.Col(
+                    build_card(r),
+                    xs=12, sm=6, md=4, lg=3
+                )
+                for r in records[:20]
+            ],
+            className="g-4",
+            justify="start",
+            style={"width": "100%"}
+        )
+    ],
+    style={"width": "100%"}
+)
 @app.callback(
     Output("last-updated", "children"),
     Input("url", "pathname")
