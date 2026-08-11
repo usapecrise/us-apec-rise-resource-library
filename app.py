@@ -993,20 +993,39 @@ def update_results(
         fy = None
 
     # Apply filters
+    def matches_filter(value, selected_values):
+        if not selected_values:
+            return True
+
+        if isinstance(value, list):
+            return any(item in value for item in selected_values)
+
+        return value in selected_values
+
     if economy:
-        df = df[df["Economy Name"].isin(economy)]
+        df = df[df["Economy Name"].apply(
+            lambda x: matches_filter(x, economy)
+        )]
 
     if workstream:
-        df = df[df["Workstream Name"].isin(workstream)]
-        
+        df = df[df["Workstream Name"].apply(
+            lambda x: matches_filter(x, workstream)
+        )]
+
     if resource_type:
-        df = df[df["Resource Type Name"].isin(resource_type)]
+        df = df[df["Resource Type Name"].apply(
+            lambda x: matches_filter(x, resource_type)
+        )]
 
     if activity:
-        df = df[df["Activity Type Name"].isin(activity)]
+        df = df[df["Activity Type Name"].apply(
+            lambda x: matches_filter(x, activity)
+        )]
 
     if fy:
-        df = df[df["Fiscal Year Name"].isin(fy)]
+        df = df[df["Fiscal Year Name"].apply(
+            lambda x: matches_filter(x, fy)
+        )]
 
     # Sidebar Resource Type
     if selected and selected != "All Resources":
