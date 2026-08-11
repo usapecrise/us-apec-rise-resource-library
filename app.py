@@ -1027,10 +1027,6 @@ def update_results(
             lambda x: matches_filter(x, fy)
         )]
 
-    # Sidebar Resource Type
-    if selected and selected != "All Resources":
-        df = df[df["Resource Type Name"] == selected]
-
     # Search
     if query:
         df = df[df.apply(
