@@ -455,19 +455,19 @@ def build_filtered_dataframe(economy, workstream, activity, fy, status):
     df = get_activity_data()
 
     if economy:
-        df = df[df["Economy Name"] == economy]
+        df = df[df["Economy Name"].isin(economy)]
 
     if workstream:
-        df = df[df["Workstream Name"] == workstream]
+        df = df[df["Workstream Name"].isin(workstream)]
 
     if resource_type:
-        df = df[df["Resource Type Name"] == resource_type]   
+        df = df[df["Resource Type Name"].isin(resource_type)]  
 
     if activity:
-        df = df[df["Activity Type Name"] == activity]
+        df = df[df["Activity Type Name"].isin(activity)]
 
     if fy:
-        df = df[df["Fiscal Year Name"] == fy]
+        df = df[df["Fiscal Year Name"].isin(fy)]
 
     return df
 
@@ -963,19 +963,19 @@ def update_results(
 
     # Apply filters
     if economy:
-        df = df[df["Economy Name"] == economy]
+        df = df[df["Economy Name"].isin(economy)]
 
     if workstream:
-        df = df[df["Workstream Name"] == workstream]
+        df = df[df["Workstream Name"].isin(workstream)]
+        
+    if resource_type:
+    df = df[df["Resource Type Name"].isin(resource_type)]
 
     if fy:
-        df = df[df["Fiscal Year Name"] == fy]
+        df = df[df["Fiscal Year Name"].isin(fy)]
 
-    # Activity Type logic
-    if activity:
-        df = df[df["Activity Type Name"] == activity]
-
-    elif selected and selected != "All Resources":
+    # Sidebar Resource Type
+    if selected and selected != "All Resources":
         df = df[df["Resource Type Name"] == selected]
 
     # Search
@@ -1308,16 +1308,16 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
 
     # Apply SAME filters as your UI
     if economy:
-        df = df[df["Economy"] == economy]
+        df = df[df["Economy Name"].isin(economy)]
 
     if workstream:
-        df = df[df["Workstream"] == workstream]
+        df = df[df["Workstream Name"].isin(workstream)]
 
     if activity:
-        df = df[df["Activity Type"] == activity]
+        df = df[df["Activity Type Name"].isin(activity)]
 
     if fy:
-        df = df[df["Fiscal Year"] == fy]
+        df = df[df["Fiscal Year Name"].isin(fy)]
 
     if query:
         df = df[df.apply(
