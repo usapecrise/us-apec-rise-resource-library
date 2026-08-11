@@ -990,6 +990,7 @@ def update_results(
         query = None
         economy = None
         workstream = None
+        resource_type = None
         activity = None
         fy = None
 
@@ -1411,6 +1412,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
 
 @app.callback(
     Output("search-input", "value"),
+    Output("resource-type-filter", "value"),
     Output("economy-filter", "value"),
     Output("workstream-filter", "value"),
     Output("activity-filter", "value"),
@@ -1419,7 +1421,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
     prevent_initial_call=True
 )
 def clear_all_filters(n):
-    return None, None, None, None, None
+    return None, None, None, None, None, None
 
 # =====================================
 # RUN
