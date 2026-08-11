@@ -471,6 +471,11 @@ def build_filtered_dataframe(economy, workstream, activity, fy, status):
 
     return df
 
+def display_value(value):
+    if isinstance(value, list):
+        return ", ".join(str(x) for x in value)
+    return value or ""
+
 # =====================================
 # CARD
 # =====================================
@@ -551,22 +556,22 @@ def build_card(item):
                         [
 
                             html.Span(
-                                item.get("Resource Type Name", ""),
+                                display_value(item.get("Resource Type Name")),
                                 className="tag",
                             ),
 
                             html.Span(
-                                item.get("Workstream Name", ""),
+                                display_value(item.get("Workstream Name")),
                                 className="tag",
                             ),
 
                             html.Span(
-                                item.get("Economy Name", ""),
+                                display_value(item.get("Economy Name")),
                                 className="tag",
                             ),
 
                             html.Span(
-                                item.get("Fiscal Year Name", ""),
+                                display_value(item.get("Fiscal Year Name")),
                                 className="tag",
                             ),
 
@@ -977,13 +982,6 @@ def update_results(
 
     df = load_airtable_table("Resources")
 
-    def clean(val):
-        return val[0] if isinstance(val, list) else val
-
-    for col in df.columns:
-        df[col] = df[col].apply(clean)
-
-    # Clear filters
     trigger = ctx.triggered_id
 
     if trigger == "clear-filters":
