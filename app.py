@@ -661,7 +661,7 @@ app.layout = html.Div(
         dcc.Location(id="url"),
         dcc.Download(id="download-all"),
         dcc.Store(id="activity-type-counts"),
-
+        dcc.Store(id="resource-refresh", data=0),
         dcc.Store(
             id="selected-resource-type",
             data="All Resources"
@@ -960,6 +960,7 @@ html.Div(id="results"),
     Input("apply-filters", "n_clicks"),
     Input("clear-filters", "n_clicks"),
     Input("selected-resource-type", "data"),
+    Input("resource-refresh", "data"),
 
     State("search-input", "value"),
     State("economy-filter", "value"),
@@ -972,6 +973,7 @@ def update_results(
     apply_click,
     clear_click,
     selected,
+    resource_refresh,
     query,
     economy,
     workstream,
