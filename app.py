@@ -1038,31 +1038,31 @@ def update_results(
 
     # ================= EMPTY STATE =================
     if len(records) == 0:
-    return html.Div(
-        [
-            html.Div(
-                "No resources match your current filters.",
-                style={
-                    "fontSize": "16px",
-                    "fontWeight": "600",
-                    "color": "#355f7c",
-                    "marginBottom": "6px"
-                }
-            ),
-            html.Div(
-                "Try adjusting your filters or search terms.",
-                style={
-                    "fontSize": "13px",
-                    "color": "#6c7a89"
-                }
-            )
-        ],
-        style={
-            "textAlign": "center",
-            "padding": "60px 0",
-            "width": "100%"
-        }
-    )
+        return html.Div(
+            [
+                html.Div(
+                    "No resources match your current filters.",
+                    style={
+                        "fontSize": "16px",
+                        "fontWeight": "600",
+                        "color": "#355f7c",
+                        "marginBottom": "6px"
+                    }
+                ),
+                html.Div(
+                    "Try adjusting your filters or search terms.",
+                    style={
+                        "fontSize": "13px",
+                        "color": "#6c7a89"
+                    }
+                )
+            ],
+            style={
+                "textAlign": "center",
+                "padding": "60px 0",
+                "width": "100%"
+            }
+        )
 
     # ================= RESULTS =================
     return html.Div(
