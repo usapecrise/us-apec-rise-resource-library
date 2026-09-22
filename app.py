@@ -56,7 +56,11 @@ external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
 ]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(
+    __name__,
+    external_stylesheets=external_stylesheets,
+    title="US-APEC RISE Resource Library"
+)
 server = app.server
 
 # ==============================
