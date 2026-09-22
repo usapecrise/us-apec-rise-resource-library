@@ -982,7 +982,7 @@ def update_results(
     fy,
 ):
 
-    df = load_airtable_table("Resources")
+    df = DATASTORE["resources"].copy()
 
     trigger = ctx.triggered_id
 
@@ -1154,7 +1154,7 @@ def toggle_sidebar(n, sidebar_style, main_style):
 )
 def update_counts(_):
 
-    df = load_airtable_table("Resources")
+    df = DATASTORE["resources"].copy()
 
     def clean(val):
         return val[0] if isinstance(val, list) else val
