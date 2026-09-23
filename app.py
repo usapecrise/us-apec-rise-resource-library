@@ -79,11 +79,6 @@ HEADERS = {
 
 PERCENT_INDICATORS = {"OC3", "OC4", "OC7"}
 
-print("DEBUG ENV:")
-print("API KEY:", os.getenv("AIRTABLE_API_KEY"))
-print("BASE ID:", os.getenv("AIRTABLE_BASE_ID"))
-
-
 # =========================================
 # AIRTABLE FETCH
 # =========================================
