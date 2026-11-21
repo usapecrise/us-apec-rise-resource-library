@@ -1,3 +1,4 @@
+APScheduler>=3.10,<4
 azure-storage-blob
 blinker==1.9.0
 cachelib==0.13.0
