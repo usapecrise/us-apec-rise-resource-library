@@ -1,5 +1,5 @@
+# Import Libraries
 from locale import normalize
-from turtle import title
 
 from azure.storage.blob import BlobServiceClient
 
@@ -35,13 +35,13 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 from reportlab.lib.units import inch
 
-ET = ZoneInfo("America/New_York")
-
 import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from dotenv import load_dotenv
 from pathlib import Path
+
+ET = ZoneInfo("America/New_York")
 
 env_path = Path(__file__).parent / ".env"
 load_dotenv(dotenv_path=env_path)
