@@ -1,7 +1,7 @@
 from locale import normalize
+from turtle import title
 
 from azure.storage.blob import BlobServiceClient
-import zipfile
 
 import dash
 from dash import Dash, html, dcc, Input, Output, State, ctx, ALL
@@ -56,11 +56,7 @@ external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
 ]
 
-app = dash.Dash(
-    __name__,
-    external_stylesheets=external_stylesheets,
-    title="US-APEC RISE Resource Library"
-)
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 # ==============================
@@ -78,6 +74,24 @@ HEADERS = {
 }
 
 PERCENT_INDICATORS = {"OC3", "OC4", "OC7"}
+
+print("DEBUG ENV:")
+print("API KEY:", os.getenv("AIRTABLE_API_KEY"))
+print("BASE ID:", os.getenv("AIRTABLE_BASE_ID"))
+
+
+# =========================================
+# RSS DATA CACHE
+# =========================================
+RSS_CACHE = {}
+RSS_CACHE_TIME = None
+RSS_CACHE_DURATION = timedelta(hours=12)
+
+# =========================================
+# CACHE REFRESH TIMES (UTC)
+# =========================================
+
+CACHE_REFRESH_HOURS = [7, 19]  # ET
 
 # =========================================
 # AIRTABLE FETCH
@@ -289,31 +303,16 @@ ACTIVITY_TYPE_ICONS = {
     "Technical Report": "bi-file-earmark-text",
 }
 
-RESOURCE_TYPE_ICONS = {
-    "Toolkit": "bi-tools",
-    "Report": "bi-file-earmark-text",
-    "Brief": "bi-file-text",
-    "Insight Note": "bi-lightbulb",
-    "Dashboard": "bi-bar-chart",
-    "Presentation": "bi-easel",
-    "Case Study": "bi-journal-text",
-}
-
-
 sidebar = html.Div(
     [
-
-        html.H4(
-            "US APEC-RISE",
-            style={
-                "fontSize": "20px",
-                "letterSpacing": "1px",
-                "color": "#2f4a5f",
-                "fontWeight": "600",
-                "textTransform": "uppercase"
-            }
-        ),
-
+        html.Div([
+            html.Div(html.I(className="bi bi-globe-americas"), className="rise-brand-mark", title="US APEC-RISE"),
+            html.Div([
+                html.Div("US APEC-RISE", className="rise-brand-name"),
+                html.Div("RESOURCE LIBRARY", className="rise-brand-tag"),
+            ]),
+        ], className="rise-brand"),
+        html.Div("RESOURCES", className="rise-nav-label"),
         html.Hr(),
 
         # 🔥 RESOURCE TYPE (PILLS)
@@ -339,12 +338,16 @@ sidebar = html.Div(
             href="https://us-apec-rise-performance-dashboard-f4f7e6hmauggaeew.centralus-01.azurewebsites.net/",
             target="_blank",
             className="sidebar-export-row",
+            style={
+                "textDecoration": "none",
+                "color": "#FFFFFF",
+            },
         ),
         # 🔹 EXPLORER
         html.Div(
             [
                 html.I(className="bi bi-search sidebar-icon"),
-                html.Span("Evidence Explorer (Coming Soon)", className="sidebar-export-text")
+                html.Span("Explorer", className="sidebar-export-text")
             ],
             className="sidebar-export-row"
         ),
@@ -352,12 +355,12 @@ sidebar = html.Div(
     ],
     id="sidebar",
     style={
-        "width": "230px",
+        "width": "290px",
         "position": "fixed",
         "top": "0",
         "left": "0",
         "height": "100vh",
-        "backgroundColor": "#e9edf2",
+        "backgroundColor": "#0A2240",
         "padding": "20px",
         "zIndex": "1000"
     }
@@ -368,72 +371,27 @@ sidebar = html.Div(
 # ==============================
 topbar = html.Div(
     [
-        # Sidebar Toggle
-        html.Button(
-            "☰",
-            id="sidebar-toggle",
-            style={
-                "background": "none",
-                "border": "none",
-                "font-size": "20px",
-                "color": "#355f7c",
-                "cursor": "pointer",
-                "margin-right": "15px"
-            }
-        ),
-
-        # Title + Subtitle Block
-        html.Div(
-            [
-                html.H3(
-                    [
-                        html.Span(
-                            "Resource Library",
-                            style={
-                                "fontSize": "30px",
-                                "letterSpacing": "1px",
-                                "color": "#2f4a5f",
-                                "fontWeight": "600",
-                                "textTransform": "uppercase"
-                            }),
-                       
-    
-                    ],
-                    style={
-                        "margin": 0,
-                        "font-weight": "600"
-                    }
-                ),
-
-                html.Div(
-                    "Knowledge products, technical guidance, and evidence developed under US APEC-RISE.",
-                    id="page-subtitle",
-                    style={
-                        "font-size": "14px",
-                        "color": "#355f7c",
-                        "font-style": "italic",
-                        "margin-top": "4px"
-                    }
-                ),
-            ],
-        ),
-
-        # Spacer (pushes timestamp right)
-        html.Div(style={"margin-left": "auto"}),
-
-        # Timestamp (Top Right)
-        html.Div(
-            [
-                html.I(className="bi bi-clock me-1"),
-                html.Span(id="last-updated"),
-            ],
-            className="timestamp-container"
-        ),
-    ],
-    className="topbar",
-    style={
-        "borderBottom": "1px solid #d6dee6"}
-
+        html.Div(className="rise-topbar-landscape", **{"aria-hidden": "true"}),
+        html.Button(html.I(className="bi bi-list"), id="sidebar-toggle",
+                    className="rise-menu-toggle", title="Toggle sidebar",
+                    **{"aria-label": "Toggle sidebar"}),
+        html.Div([
+            html.Div([
+                html.Span("US APEC-RISE", className="rise-crumb-root"),
+                html.I(className="bi bi-chevron-right rise-crumb-chevron"),
+                html.Span("Resource Library", className="rise-crumb-page"),
+            ], className="rise-breadcrumb"),
+            html.Div("Resource Library", className="rise-topbar-title"),
+            html.Div("Browse program reports, tools, and evidence", className="rise-topbar-subtitle"),
+        ], className="rise-topbar-heading"),
+        html.Div([
+            html.I(className="bi bi-arrow-repeat rise-update-icon", **{"aria-hidden": "true"}),
+            html.Span(id="last-updated", className="rise-update-value"),
+            html.Span(className="rise-status-divider", **{"aria-hidden": "true"}),
+            html.Span(className="rise-status-dot", **{"aria-hidden": "true"}),
+            html.Span("Library: Active", className="rise-status-text"),
+        ], className="rise-header-status"),
+    ], className="topbar rise-topbar"
 )
 
 # =====================================
@@ -454,26 +412,24 @@ def build_filtered_dataframe(economy, workstream, activity, fy, status):
     df = get_activity_data()
 
     if economy:
-        df = df[df["Economy Name"].isin(economy)]
+        df = df[df["Economy Name"] == economy]
 
     if workstream:
-        df = df[df["Workstream Name"].isin(workstream)]
+        df = df[df["Workstream Name"] == workstream]
 
     if resource_type:
-        df = df[df["Resource Type Name"].isin(resource_type)]  
+        df = df[df["Resource Type Name"] == resource_type]   
 
     if activity:
-        df = df[df["Activity Type Name"].isin(activity)]
+        df = df[df["Activity Type Name"] == activity]
 
     if fy:
-        df = df[df["Fiscal Year Name"].isin(fy)]
+        df = df[df["Fiscal Year Name"] == fy]
+
+    if status:
+        df = df[df["Status"] == status]
 
     return df
-
-def display_value(value):
-    if isinstance(value, list):
-        return ", ".join(str(x) for x in value)
-    return value or ""
 
 # =====================================
 # CARD
@@ -498,7 +454,7 @@ def build_card(item):
                         "width": "100%",
                         "height": "200px",
                         "objectFit": "contain",
-                        "backgroundColor": "#f4f7fb",
+                        "backgroundColor": "#F0F7FC",
                         "borderTopLeftRadius": "12px",
                         "borderTopRightRadius": "12px",
                     },
@@ -512,9 +468,9 @@ def build_card(item):
                     "display": "flex",
                     "alignItems": "center",
                     "justifyContent": "center",
-                    "backgroundColor": "#f4f7fb",
+                    "backgroundColor": "#F0F7FC",
                     "fontSize": "28px",
-                    "color": "#355f7c",
+                    "color": "#355F7C",
                     "overflow": "hidden",
                     "borderTopLeftRadius": "12px",
                     "borderTopRightRadius": "12px",
@@ -534,7 +490,7 @@ def build_card(item):
                         style={
                             "fontWeight": "600",
                             "fontSize": "14px",
-                            "color": "#2f4a5f",
+                            "color": "#0A2240",
                             "marginBottom": "6px",
                         },
                     ),
@@ -544,7 +500,7 @@ def build_card(item):
                         item.get("Description", ""),
                         style={
                             "fontSize": "12px",
-                            "color": "#6c7a89",
+                            "color": "#58738C",
                             "marginBottom": "10px",
                         },
                     ),
@@ -555,22 +511,22 @@ def build_card(item):
                         [
 
                             html.Span(
-                                display_value(item.get("Resource Type Name")),
+                                item.get("Resource Type Name", ""),
                                 className="tag",
                             ),
 
                             html.Span(
-                                display_value(item.get("Workstream Name")),
+                                item.get("Workstream Name", ""),
                                 className="tag",
                             ),
 
                             html.Span(
-                                display_value(item.get("Economy Name")),
+                                item.get("Economy Name", ""),
                                 className="tag",
                             ),
 
                             html.Span(
-                                display_value(item.get("Fiscal Year Name")),
+                                item.get("Fiscal Year Name", ""),
                                 className="tag",
                             ),
 
@@ -598,8 +554,8 @@ dbc.Row(
                 href=get_blob_url(item.get("Blob Path")),
                 target="_blank",
                 style={
-                    "backgroundColor": "#355f7c",
-                    "borderColor": "#355f7c",
+                    "backgroundColor": "#0A2240",
+                    "borderColor": "#0A2240",
                     "color": "white",
                     },
                 outline=True,
@@ -624,8 +580,8 @@ dbc.Row(
                 href=get_blob_url(item.get("Blob Path")),
                 style={
                     "backgroundColor": "white",
-                    "borderColor": "#355f7c",
-                    "color": "#355f7c",
+                    "borderColor": "#355F7C",
+                    "color": "#355F7C",
                     },
                 outline=True,
                 size="sm",
@@ -660,7 +616,7 @@ app.layout = html.Div(
         dcc.Location(id="url"),
         dcc.Download(id="download-all"),
         dcc.Store(id="activity-type-counts"),
-        dcc.Store(id="resource-refresh", data=0),
+
         dcc.Store(
             id="selected-resource-type",
             data="All Resources"
@@ -681,254 +637,53 @@ app.layout = html.Div(
 
                         topbar,
 
-                        # ================= FILTER SECTION =================
-                        html.Div(
+                        # ================= DASHBOARD-STYLE FILTERS =================
+                        html.Div([
+                            html.Div([
+                                html.Div([
+                                    html.Span(html.I(className="bi bi-funnel"), className="library-filter-icon"),
+                                    html.Div([
+                                        html.Div("RESOURCE FILTERS", className="library-filter-title"),
+                                        html.Div("Refine the library by keyword or category", className="library-filter-subtitle"),
+                                    ]),
+                                ], className="library-filter-heading"),
+                                html.Div([
+                                    html.Button([html.I(className="bi bi-download me-2"), "Download All"],
+                                                id="download-all-btn", className="download-subtle-btn"),
+                                ], className="library-filter-actions"),
+                            ], className="library-filter-toolbar"),
+                            dbc.Card(dbc.CardBody([
+                                html.Div([
+                                    html.Div([html.Label("SEARCH", className="filter-label"),
+                                              dcc.Input(id="search-input", placeholder="Search resources...", className="search-input")],
+                                             className="library-filter-field library-search-field"),
+                                    html.Div([html.Label("RESOURCE TYPE", className="filter-label"),
+                                              dcc.Dropdown(id="resource-type-filter", placeholder="All types", clearable=True)], className="library-filter-field"),
+                                    html.Div([html.Label("ECONOMY", className="filter-label"),
+                                              dcc.Dropdown(id="economy-filter", placeholder="All economies", clearable=True)], className="library-filter-field"),
+                                    html.Div([html.Label("WORKSTREAM", className="filter-label"),
+                                              dcc.Dropdown(id="workstream-filter", placeholder="All workstreams", clearable=True)], className="library-filter-field"),
+                                    html.Div([html.Label("ACTIVITY TYPE", className="filter-label"),
+                                              dcc.Dropdown(id="activity-filter", placeholder="All activities", clearable=True)], className="library-filter-field"),
+                                    html.Div([html.Label("FISCAL YEAR", className="filter-label"),
+                                              dcc.Dropdown(id="fy-filter", placeholder="All years", clearable=True)], className="library-filter-field"),
+                                    html.Div([dbc.Button([html.I(className="bi bi-arrow-counterclockwise me-1"), "Clear"],
+                                                         id="clear-filters", className="button-clear-filters-btn", n_clicks=0)],
+                                             className="library-filter-field library-clear-field"),
+                                ], className="library-filter-grid"),
+                            ]), className="filter-bar"),
+                        ], className="library-filters-section"),
 
-                            [
-
-                                # 🔹 ROW 1: Title + Button
-                                html.Div(
-                                    [
-
-                                        html.Div(
-                                            "FILTER RESOURCES",
-                                            className="section-label"
-                                        ),
-
-                                        html.Button(
-                                            [
-                                                html.I(className="bi bi-download me-1"),
-                                                "Download All"
-                                            ],
-                                            id="download-all-btn",
-                                            className="download-subtle-btn"
-                                        )
-
-                                    ],
-                                    style={
-                                        "display": "flex",
-                                        "justifyContent": "space-between",
-                                        "alignItems": "center"
-                                    }
-                                ),
-
-                                # 🔹 ROW 2: Description
-                                html.Div(
-                                    "Use filters to quickly find reports, dashboards, and other resources by economy, workstream, activity type, or fiscal year.",
-                                    style={
-                                        "fontStyle": "italic",
-                                        "fontSize": "13px",
-                                        "color": "#6c757d",
-                                        "marginTop": "4px",
-                                        "marginBottom": "8px"
-                                    }
-                                ),
-# 🔹 FILTER CARD
-dbc.Card(
-    dbc.CardBody(
-
-        [
-
-            # ==========================================
-            # SEARCH
-            # ==========================================
-            html.Div(
-                [
-                    html.Div(
-                        "Search",
-                        className="filter-label",
-                        style={"marginBottom": "6px"},
-                    ),
-
-                    dcc.Input(
-                        id="search-input",
-                        placeholder="Search resources by title, keyword, or description...",
-                        className="search-input",
-                        style={
-                            "width": "100%",
-                            "height": "42px",
-                        },
-                    ),
-                ],
-                style={"marginBottom": "20px"},
-            ),
-
-            # ==========================================
-            # FILTERS - ROW 1
-            # ==========================================
-            dbc.Row(
-
-                [
-
-                    dbc.Col(
-                        [
-                            html.Div("Resource", className="filter-label"),
-                            dcc.Dropdown(
-                                id="resource-type-filter",
-                                placeholder="All Resources",
-                                clearable=True,
-                                multi=True,
-                            ),
-                        ],
-                        md=4,
-                    ),
-
-                    dbc.Col(
-                        [
-                            html.Div("Economy", className="filter-label"),
-                            dcc.Dropdown(
-                                id="economy-filter",
-                                placeholder="All Economies",
-                                clearable=True,
-                                multi=True,
-                            ),
-                        ],
-                        md=4,
-                    ),
-
-                    dbc.Col(
-                        [
-                            html.Div("Workstream", className="filter-label"),
-                            dcc.Dropdown(
-                                id="workstream-filter",
-                                placeholder="All Workstreams",
-                                clearable=True,
-                                multi=True,
-                            ),
-                        ],
-                        md=4,
-                    ),
-
-                ],
-
-                className="g-3 mb-3",
-
-            ),
-
-# ==========================================
-# FILTERS - ROW 2
-# ==========================================
-dbc.Row(
-    [
-
-        # Activity
-        dbc.Col(
-            [
-                html.Div("Activity", className="filter-label"),
-                dcc.Dropdown(
-                    id="activity-filter",
-                    placeholder="All Activities",
-                    clearable=True,
-                    multi=True,
-                ),
-            ],
-            md=4,
-        ),
-
-        # Fiscal Year
-        dbc.Col(
-            [
-                html.Div("Fiscal Year", className="filter-label"),
-                dcc.Dropdown(
-                    id="fy-filter",
-                    placeholder="All Fiscal Years",
-                    clearable=True,
-                    multi=True,
-                ),
-            ],
-            md=4,
-        ),
-
-        # Apply Filters
-        dbc.Col(
-            [
-                html.Div(" ", className="filter-label"),
-
-                dbc.Button(
-                    [
-                        html.I(className="bi bi-funnel me-2"),
-                        "Apply Filters",
-                    ],
-                    id="apply-filters",
-                    n_clicks=0,
-                    style={
-                        "width": "100%",
-                        "height": "38px",
-                        "backgroundColor": "#355f7c",
-                        "borderColor": "#355f7c",
-                        "color": "white",
-                    },
-                ),
-            ],
-            md=2,
-            style={
-                "display": "flex",
-                "flexDirection": "column",
-                "justifyContent": "flex-end",
-            },
-        ),
-
-        # Clear Filters
-        dbc.Col(
-            [
-                html.Div(" ", className="filter-label"),
-
-                dbc.Button(
-                    [
-                        html.I(className="bi bi-x-circle me-2"),
-                        "Clear Filters",
-                    ],
-                    id="clear-filters",
-                    className="button-clear-filters-btn",
-                    color="light",
-                    n_clicks=0,
-                    style={
-                        "width": "100%",
-                        "height": "38px",
-                    },
-                ),
-            ],
-            md=2,
-            style={
-                "display": "flex",
-                "flexDirection": "column",
-                "justifyContent": "flex-end",
-            },
-        ),
-
-    ],
-    className="g-3 align-items-end",
-),
-
-        ]
-
-    ),
-
-    className="filter-bar",
-    style={
-        "marginTop": "10px",
-    },
-
-),
-# ================= RESULTS =================
-html.Div(id="results"),
-
-                            ],
-
-                            style={
-                                "marginTop": "24px",
-                                "marginBottom": "24px"
-                            }
-
-                        ),
+                        # ================= RESULTS =================
+                        html.Div(id="results")
 
                     ],
 
-                    id="main-content",
+                    id="main-content", 
                     style={
-                        "marginLeft": "230px", 
-                        "padding": "24px 28px",
-                        "backgroundColor": "#f8fafc",
+                        "marginLeft": "290px", 
+                        "padding": "0 32px 28px",
+                        "backgroundColor": "#FFFFFF",
                         "minHeight": "100vh",
                         "width": "100%",
                         "transition": "margin-left 0.3s"
@@ -955,78 +710,64 @@ html.Div(id="results"),
 
 @app.callback(
     Output("results", "children"),
-
-    Input("apply-filters", "n_clicks"),
+    Input("search-input", "value"),
+    Input("economy-filter", "value"),
+    Input("workstream-filter", "value"),
+    Input("resource-type-filter", "value"),
+    Input("activity-filter", "value"),
+    Input("fy-filter", "value"),
     Input("clear-filters", "n_clicks"),
     Input("selected-resource-type", "data"),
-    Input("resource-refresh", "data"),
-
-    State("search-input", "value"),
-    State("economy-filter", "value"),
-    State("workstream-filter", "value"),
-    State("resource-type-filter", "value"),
-    State("activity-filter", "value"),
-    State("fy-filter", "value"),
 )
 def update_results(
-    apply_click,
-    clear_click,
-    selected,
-    resource_refresh,
     query,
     economy,
     workstream,
     resource_type,
     activity,
     fy,
+    clear_click,
+    selected,
 ):
 
     df = DATASTORE["resources"].copy()
+    print(DATASTORE["resources"].columns.tolist())
+    print(DATASTORE["resources"].head())
+    
+    # Clean Airtable list fields
+    def clean(val):
+        return val[0] if isinstance(val, list) else val
 
+    for col in ["Economy", "Workstream", "Activity Type", "Fiscal Year"]:
+        if col in df.columns:
+            df[col] = df[col].apply(clean)
+
+    # Clear filters
     trigger = ctx.triggered_id
 
     if trigger == "clear-filters":
         query = None
         economy = None
         workstream = None
-        resource_type = None
         activity = None
         fy = None
 
     # Apply filters
-    def matches_filter(value, selected_values):
-        if not selected_values:
-            return True
-
-        if isinstance(value, list):
-            return any(item in value for item in selected_values)
-
-        return value in selected_values
-
     if economy:
-        df = df[df["Economy Name"].apply(
-            lambda x: matches_filter(x, economy)
-        )]
+        df = df[df["Economy"] == economy]
 
     if workstream:
-        df = df[df["Workstream Name"].apply(
-            lambda x: matches_filter(x, workstream)
-        )]
-
-    if resource_type:
-        df = df[df["Resource Type Name"].apply(
-            lambda x: matches_filter(x, resource_type)
-        )]
-
-    if activity:
-        df = df[df["Activity Type Name"].apply(
-            lambda x: matches_filter(x, activity)
-        )]
+        df = df[df["Workstream"] == workstream]
 
     if fy:
-        df = df[df["Fiscal Year Name"].apply(
-            lambda x: matches_filter(x, fy)
-        )]
+        df = df[df["Fiscal Year"] == fy]
+
+    # Activity Type logic
+    if activity:
+        df = df[df["Activity Type"] == activity]
+
+    elif selected and selected != "All Resources":
+        df = df[df["Resource Type Name"] == selected]
 
     # Search
     if query:
@@ -1039,66 +780,76 @@ def update_results(
 
     # ================= EMPTY STATE =================
     if len(records) == 0:
-        return html.Div(
-            [
-                html.Div(
-                    "No resources match your current filters.",
-                    style={
-                        "fontSize": "16px",
-                        "fontWeight": "600",
-                        "color": "#355f7c",
-                        "marginBottom": "6px"
-                    }
-                ),
-                html.Div(
-                    "Try adjusting your filters or search terms.",
-                    style={
-                        "fontSize": "13px",
-                        "color": "#6c7a89"
-                    }
-                )
-            ],
-            style={
-                "textAlign": "center",
-                "padding": "60px 0",
-                "width": "100%"
-            }
+        return dbc.Container(
+            html.Div(
+                [
+                    html.Div(
+                        "No resources match your current filters.",
+                        style={
+                            "fontSize": "16px",
+                            "fontWeight": "600",
+                            "color": "#355F7C",
+                            "marginBottom": "6px"
+                        }
+                    ),
+                    html.Div(
+                        "Try adjusting your filters or search terms.",
+                        style={
+                            "fontSize": "13px",
+                            "color": "#58738C"
+                        }
+                    )
+                ],
+                style={
+                    "textAlign": "center",
+                    "padding": "60px 0"
+                }
+            ),
+            fluid=True 
         )
 
     # ================= RESULTS =================
-    return html.Div(
-    [
-        html.Div(
-            f"{len(records)} results found",
-            style={
-                "fontSize": "13px",
-                "color": "#6c757d",
-                "marginBottom": "10px"
-            }
-        ),
+    return dbc.Container(
 
-        dbc.Row(
-            [
-                dbc.Col(
-                    build_card(r),
-                    xs=12, sm=6, md=4, lg=3
-                )
-                for r in records[:20]
-            ],
-            className="g-4",
-            justify="start",
-            style={"width": "100%"}
-        )
-    ],
-    style={"width": "100%"}
-)
+        [
+
+            html.Div(
+                f"{len(records)} results found",
+                style={
+                    "fontSize": "13px",
+                    "color": "#58738C",
+                    "marginBottom": "10px"
+                }
+            ),
+
+            dbc.Row(
+
+                [
+                    dbc.Col(
+                        build_card(r),
+                        xs=12, sm=6, md=4, lg=3
+                    )
+                    for r in records[:20]
+                ],
+
+                className="g-4",
+                justify="start",  
+                style={"width": "100%"}
+
+            )
+
+        ],
+
+        fluid=True
+    )
+
 @app.callback(
     Output("last-updated", "children"),
     Input("url", "pathname")
 )
 def update_timestamp(_):
     now = datetime.now(ZoneInfo("America/New_York"))
-    return now.strftime("Library loaded: %d %B %Y • %I:%M %p ET")
+    return now.strftime("Updated %d %b %Y • %I:%M %p ET")
 
 @app.callback(
     Output("sidebar", "style"),
@@ -1113,7 +864,7 @@ def toggle_sidebar(n, sidebar_style, main_style):
     sidebar_style = sidebar_style or {}
     main_style = main_style or {}
 
-    is_open = sidebar_style.get("width", "230px") == "230px"
+    is_open = sidebar_style.get("width", "230px") == "290px"
 
     if is_open:
         sidebar_style = {
@@ -1124,7 +875,7 @@ def toggle_sidebar(n, sidebar_style, main_style):
         "left": "0",
         "top": "0",
         "height": "100vh",
-        "backgroundColor": "#e9edf2",
+        "backgroundColor": "#0A2240",
         "zIndex": "1000",
     }
 
@@ -1132,14 +883,14 @@ def toggle_sidebar(n, sidebar_style, main_style):
 
     else:
         sidebar_style = {
-        "width": "230px",
+        "width": "290px",
         "padding": "20px",
         "overflow": "visible",
         "position": "fixed",
         "left": "0",
         "top": "0",
         "height": "100vh",
-        "backgroundColor": "#e9edf2",
+        "backgroundColor": "#0A2240",
         "zIndex": "1000",
     }
 
@@ -1158,26 +909,22 @@ def update_counts(_):
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
-    if "Resource Type Name" in df.columns:
-        df["Resource Type Name"] = df["Resource Type Name"].apply(clean)
+    # Use the LOOKUP field, not the linked record ID
+    if "Activity Type Name" in df.columns:
+        df["Activity Type Name"] = df["Activity Type Name"].apply(clean)
 
-    counts = df["Resource Type Name"].value_counts().to_dict()
+    counts = df["Activity Type Name"].value_counts().to_dict()
     counts["All Resources"] = len(df)
 
-    print("Update counts:", counts)
-
     return counts
+
 
 @app.callback(
     Output("resource-type-sidebar", "children"),
     Input("activity-type-counts", "data"),
     Input("selected-resource-type", "data"),
 )
-
-
 def render_sidebar(counts, selected):
-    
-    print("Sidebar counts:", counts)
 
     if not counts:
         return []
@@ -1216,8 +963,8 @@ def render_sidebar(counts, selected):
         if k == "All Resources":
             continue
 
-        icon = RESOURCE_TYPE_ICONS.get(k, "bi-file-earmark")
-        
+        icon = ACTIVITY_TYPE_ICONS.get(k, "bi-file")
+
         items.append(
             dbc.NavLink(
     [
@@ -1294,27 +1041,28 @@ def populate_filters(_):
     resource_options = [
         {"label": x, "value": x}
         for x in sorted(resource_df["Resource Type"].dropna().unique())
-]
+    ]
 
     econ_options = [
         {"label": x, "value": x}
         for x in sorted(econ_df["Economy"].dropna().unique())
-]
+    ]
 
     ws_options = [
         {"label": x, "value": x}
         for x in sorted(ws_df["Workstream"].dropna().unique())
-]
+    ]
 
     act_options = [
         {"label": x, "value": x}
         for x in sorted(act_df["Activity Type"].dropna().unique())
-]
+    ]
 
     fy_options = [
         {"label": x, "value": x}
         for x in sorted(fy_df["Fiscal Year"].dropna().unique())
-]
+    ]
+
     return  resource_options, econ_options, ws_options, act_options, fy_options
 
 @app.callback(
@@ -1330,34 +1078,34 @@ def populate_filters(_):
 
 def download_all(n_clicks, query, economy, workstream, activity, fy):
 
-    df = load_airtable_table("Resources")
+    df = DATASTORE["activities"].copy()
 
     # Clean Airtable fields
     def clean(val):
         return val[0] if isinstance(val, list) else val
 
     for col in [
-    "Economy Name",
-    "Workstream Name",
-    "Activity Type Name",
-    "Fiscal Year Name",
-    "Resource Type Name",
+    "Economy",
+    "Workstream Reference List",
+    "Activity Type",
+    "Fiscal Year",
+    "Resource Type",
 ]:
         if col in df.columns:
             df[col] = df[col].apply(clean)
 
     # Apply SAME filters as your UI
     if economy:
-        df = df[df["Economy Name"].isin(economy)]
+        df = df[df["Economy"] == economy]
 
     if workstream:
-        df = df[df["Workstream Name"].isin(workstream)]
+        df = df[df["Workstream"] == workstream]
 
     if activity:
-        df = df[df["Activity Type Name"].isin(activity)]
+        df = df[df["Activity Type"] == activity]
 
     if fy:
-        df = df[df["Fiscal Year Name"].isin(fy)]
+        df = df[df["Fiscal Year"] == fy]
 
     if query:
         df = df[df.apply(
@@ -1378,7 +1126,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
 
             name = str(row.get("Name", f"resource_{i}")).replace("/", "-")
 
-            resource_type = row.get("Resource Type Name")
+            resource_type = row.get("Resource Type")
 
             # ================= FILES (BLOB) =================
             if resource_type == "File":
@@ -1416,7 +1164,6 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
 
 @app.callback(
     Output("search-input", "value"),
-    Output("resource-type-filter", "value"),
     Output("economy-filter", "value"),
     Output("workstream-filter", "value"),
     Output("activity-filter", "value"),
@@ -1425,7 +1172,7 @@ def download_all(n_clicks, query, economy, workstream, activity, fy):
     prevent_initial_call=True
 )
 def clear_all_filters(n):
-    return None, None, None, None, None, None
+    return None, None, None, None, None
 
 # =====================================
 # RUN
