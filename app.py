@@ -9,6 +9,8 @@ import dash_bootstrap_components as dbc
 import plotly.express as px
 import plotly.graph_objects as go
 import uuid
+import threading
+from apscheduler.schedulers.background import BackgroundScheduler
 
 import pandas as pd
 import numpy as np
@@ -197,8 +199,64 @@ def load_all_data():
 
     return data
     
+ =========================================
+# AIRTABLE CACHE AND SCHEDULED REFRESH
+# =========================================
+
+REFRESH_LOCK = threading.Lock()
+
+# Initial data load
 DATASTORE = load_all_data()
-LAST_REFRESH = datetime.now(ET
+LAST_REFRESH = datetime.now(ET)
+
+
+def refresh_airtable_cache():
+    global DATASTORE, LAST_REFRESH
+
+    if not REFRESH_LOCK.acquire(blocking=False):
+        return
+
+    try:
+        logging.info("Starting scheduled Airtable refresh")
+
+        new_data = load_all_data()
+
+        # Do not replace working data with an incomplete load.
+        if set(new_data) != set(DATASTORE):
+            raise ValueError("Airtable refresh returned incomplete tables")
+
+        if new_data["resources"].empty:
+            raise ValueError("Resources table is empty")
+
+        DATASTORE = new_data
+        LAST_REFRESH = datetime.now(ET)
+
+        logging.info(
+            "Airtable refresh completed at %s",
+            LAST_REFRESH.isoformat()
+        )
+
+    except Exception:
+        logging.exception("Scheduled Airtable refresh failed")
+
+    finally:
+        REFRESH_LOCK.release()
+
+
+scheduler = BackgroundScheduler(timezone=ET)
+
+scheduler.add_job(
+    refresh_airtable_cache,
+    trigger="cron",
+    hour="7,19",
+    minute=0,
+    id="airtable_refresh",
+    replace_existing=True,
+    max_instances=1,
+    coalesce=True,
+)
+
+scheduler.start()
 
 blob_service = BlobServiceClient.from_connection_string(
     os.getenv("AZURE_STORAGE_CONNECTION_STRING")
