@@ -198,6 +198,7 @@ def load_all_data():
     return data
     
 DATASTORE = load_all_data()
+LAST_REFRESH = datetime.now(ET
 
 blob_service = BlobServiceClient.from_connection_string(
     os.getenv("AZURE_STORAGE_CONNECTION_STRING")
@@ -389,7 +390,7 @@ topbar = html.Div(
             html.Span(id="last-updated", className="rise-update-value"),
             html.Span(className="rise-status-divider", **{"aria-hidden": "true"}),
             html.Span(className="rise-status-dot", **{"aria-hidden": "true"}),
-            html.Span("Library: Active", className="rise-status-text"),
+            html.Span("Status: Active", className="rise-status-text"),
         ], className="rise-header-status"),
     ], className="topbar rise-topbar"
 )
@@ -615,6 +616,12 @@ app.layout = html.Div(
 
         dcc.Location(id="url"),
         dcc.Download(id="download-all"),
+        
+        dcc.Interval(
+            id="refresh-timestamp",
+            interval=60 * 1000,
+            n_intervals=0
+        ),
         dcc.Store(id="activity-type-counts"),
 
         dcc.Store(
@@ -845,11 +852,15 @@ def update_results(
 
 @app.callback(
     Output("last-updated", "children"),
-    Input("url", "pathname")
+    Input("refresh-timestamp", "n_intervals")
 )
 def update_timestamp(_):
-    now = datetime.now(ZoneInfo("America/New_York"))
-    return now.strftime("Updated %d %b %Y • %I:%M %p ET")
+    if LAST_REFRESH is None:
+        return "Updated: Awaiting first refresh"
+
+    return LAST_REFRESH.astimezone(ET).strftime(
+        "Updated %d %b %Y • %I:%M %p ET"
+    )
 
 @app.callback(
     Output("sidebar", "style"),
