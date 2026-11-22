@@ -1,0 +1,43 @@
+/* Resource Library: match Performance Dashboard header. Load AFTER existing CSS. */
+.rise-topbar.topbar {
+  box-sizing:border-box; display:flex!important; align-items:center!important;
+  position:relative; isolation:isolate; overflow:hidden; gap:20px;
+  min-height:156px!important; padding:29px 34px!important;
+  background:linear-gradient(90deg,#fbfeff 0%,#eaf6fc 62%,#d2eaf4 100%)!important;
+  border:0!important; border-bottom:1px solid #c4dce9!important;
+  box-shadow:0 5px 22px rgba(18,75,113,.09)!important;
+  font-family:Inter,sans-serif;
+}
+.rise-topbar-landscape {
+  position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.98) 0%,rgba(250,254,255,.91) 27%,rgba(238,249,253,.38) 50%,rgba(233,247,252,.10) 78%,rgba(233,247,252,.06) 100%),url('/assets/rise_header_landscape.svg')!important;
+  background-position:center,right center!important; background-size:cover,cover!important;
+}
+.rise-topbar .rise-menu-toggle {
+  width:43px;height:43px;display:grid;place-items:center;flex-shrink:0;
+  border:1px solid #d3e5f1;border-radius:12px;
+  background:rgba(255,255,255,.82);color:#126da4;
+  box-shadow:0 2px 8px rgba(28,87,125,.09);font-size:21px;cursor:pointer;
+}
+.rise-topbar .rise-topbar-heading {position:relative;z-index:1;min-width:0;flex:1;}
+.rise-topbar .rise-breadcrumb {display:flex;align-items:center;gap:9px;font-size:11px;margin-bottom:9px;font-weight:700;color:#527c98;}
+.rise-topbar .rise-crumb-chevron {font-size:9px;color:#9cb4c7;}
+.rise-topbar .rise-crumb-page {color:#1477ad;}
+.rise-topbar .rise-topbar-title {font-size:clamp(27px,2.35vw,36px)!important;line-height:1.14!important;font-weight:800!important;letter-spacing:-.7px;color:#092f50!important;}
+.rise-topbar .rise-topbar-subtitle {font-size:13px!important;color:#3f6c89!important;max-width:680px;margin-top:8px;line-height:1.5!important;font-style:normal!important;}
+.rise-topbar .rise-topbar-right {display:flex;align-items:center;gap:12px;flex-shrink:0;position:relative;z-index:1;margin-top:0!important;align-self:flex-start;}
+.rise-topbar .rise-header-status {
+  display:flex;align-items:center;gap:9px;flex-wrap:nowrap;
+  padding:9px 12px;border:1px solid rgba(175,208,227,.56);
+  border-radius:10px;background:rgba(255,255,255,.64);
+  box-shadow:none;color:#315e7d;white-space:nowrap;
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+}
+.rise-topbar .rise-header-status .rise-update-icon {font-size:14px;color:#1779b4;}
+.rise-topbar .rise-header-status .rise-update-value {font-size:11px;font-weight:650;color:#315e7d;margin:0;}
+.rise-topbar .rise-header-status .rise-status-divider {height:15px;width:1px;background:#b9d5e5;margin:0 3px;}
+.rise-topbar .rise-header-status .rise-status-dot {width:7px;height:7px;background:#2ac5b1;border-radius:50%;margin:0;box-shadow:0 0 0 3px rgba(42,197,177,.12);}
+.rise-topbar .rise-header-status .rise-status-text {font-size:11px;font-weight:650;color:#236479;}
+@media(max-width:1250px){.rise-topbar.topbar{min-height:143px!important;padding:24px!important}}
+@media(max-width:1150px){.rise-topbar .rise-header-status{flex-wrap:wrap;white-space:normal;max-width:240px}}
+@media(max-width:760px){.rise-topbar.topbar{min-height:125px!important;padding:18px!important;flex-wrap:wrap}.rise-topbar .rise-topbar-title{font-size:23px!important}.rise-topbar .rise-header-status{max-width:100%}}
