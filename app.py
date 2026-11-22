@@ -424,29 +424,90 @@ sidebar = html.Div(
 # ==============================
 # TOP BAR
 # ==============================
+
 topbar = html.Div(
     [
-        html.Div(className="rise-topbar-landscape", **{"aria-hidden": "true"}),
-        html.Button(html.I(className="bi bi-list"), id="sidebar-toggle",
-                    className="rise-menu-toggle", title="Toggle sidebar",
-                    **{"aria-label": "Toggle sidebar"}),
-        html.Div([
-            html.Div([
-                html.Span("US APEC-RISE", className="rise-crumb-root"),
-                html.I(className="bi bi-chevron-right rise-crumb-chevron"),
-                html.Span("Resource Library", className="rise-crumb-page"),
-            ], className="rise-breadcrumb"),
-            html.Div("Resource Library", className="rise-topbar-title"),
-            html.Div("Browse program reports, tools, and evidence", className="rise-topbar-subtitle"),
-        ], className="rise-topbar-heading"),
-        html.Div([
-            html.I(className="bi bi-arrow-repeat rise-update-icon", **{"aria-hidden": "true"}),
-            html.Span(id="last-updated", className="rise-update-value"),
-            html.Span(className="rise-status-divider", **{"aria-hidden": "true"}),
-            html.Span(className="rise-status-dot", **{"aria-hidden": "true"}),
-            html.Span("Status: Active", className="rise-status-text"),
-        ], className="rise-header-status"),
-    ], className="topbar rise-topbar"
+        html.Div(
+            className="rise-topbar-landscape",
+            **{"aria-hidden": "true"}
+        ),
+
+        html.Button(
+            html.I(className="bi bi-list"),
+            id="sidebar-toggle",
+            className="rise-menu-toggle",
+            title="Toggle sidebar",
+            **{"aria-label": "Toggle sidebar"}
+        ),
+
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.Span(
+                            "US APEC-RISE",
+                            className="rise-crumb-root"
+                        ),
+                        html.I(
+                            className="bi bi-chevron-right rise-crumb-chevron"
+                        ),
+                        html.Span(
+                            "Resource Library",
+                            className="rise-crumb-page"
+                        ),
+                    ],
+                    className="rise-breadcrumb"
+                ),
+
+                html.Div(
+                    "Resource Library",
+                    className="rise-topbar-title"
+                ),
+
+                html.Div(
+                    "Browse program reports, tools, and evidence",
+                    className="rise-topbar-subtitle"
+                ),
+            ],
+            className="rise-topbar-heading"
+        ),
+
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.I(
+                            className="bi bi-arrow-repeat rise-update-icon",
+                            **{"aria-hidden": "true"}
+                        ),
+
+                        html.Span(
+                            id="last-updated",
+                            className="rise-update-value"
+                        ),
+
+                        html.Span(
+                            className="rise-status-divider",
+                            **{"aria-hidden": "true"}
+                        ),
+
+                        html.Span(
+                            className="rise-status-dot",
+                            **{"aria-hidden": "true"}
+                        ),
+
+                        html.Span(
+                            "Status: Active",
+                            className="rise-status-text"
+                        ),
+                    ],
+                    className="rise-header-status"
+                ),
+            ],
+            className="rise-topbar-right"
+        ),
+    ],
+    className="topbar rise-topbar"
 )
 
 # =====================================
