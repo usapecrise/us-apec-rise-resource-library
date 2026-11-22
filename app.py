@@ -198,10 +198,6 @@ def load_all_data():
             data[key] = df
 
     return data
-    
- =========================================
-# AIRTABLE CACHE AND SCHEDULED REFRESH
-# =========================================
 
 REFRESH_LOCK = threading.Lock()
 
